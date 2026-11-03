@@ -5,6 +5,7 @@ const links = [
   { to: '/', label: 'Trang chủ', end: true },
   { to: '/hotels', label: 'Khách sạn' },
   { to: '/about-us', label: 'Giới thiệu' },
+  { to: '/admin/hotels', label: 'Quản trị' },
   { to: '/contact', label: 'Liên hệ' },
 ]
 
