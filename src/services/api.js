@@ -14,3 +14,9 @@ export const hotelApi = {
   update: (id, data) => http.put(`/hotels/${id}`, data), // PUT
   remove: (id) => http.delete(`/hotels/${id}`), // DELETE
 }
+
+// Đăng ký / đăng nhập (bài tuần 3).
+export const authApi = {
+  register: (data) => http.post('/auth/register', data).then((res) => res.data), // POST
+  login: (data) => http.post('/auth/login', data).then((res) => res.data), // POST
+}

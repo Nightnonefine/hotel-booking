@@ -310,33 +310,59 @@
   font-size: 0.88rem;
 }
 
-/* Đăng nhập */
-.login__inner {
+/* Đăng nhập / Đăng ký */
+.auth__inner {
   display: flex;
   justify-content: center;
   padding: 40px 0 60px;
 }
 
-.login__card {
-  width: min(100%, 420px);
+.auth__card {
+  width: min(100%, 440px);
   display: grid;
   gap: 14px;
 }
 
-.login__card h1 {
+.auth__card h1 {
   font-size: 1.6rem;
   margin-bottom: 0;
 }
 
-.login__desc {
+.auth__desc {
   color: var(--muted);
   font-size: 0.9rem;
   margin: 0 0 4px;
 }
 
-.login__card form {
+.auth__card form {
   display: grid;
   gap: 14px;
+}
+
+.auth__switch {
+  margin: 4px 0 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.auth__switch a {
+  color: var(--teal-dark);
+  font-weight: 600;
+}
+
+.auth__switch a:hover {
+  text-decoration: underline;
+}
+
+.form-error--list {
+  margin: 0;
+  padding-left: 32px;
+  list-style: disc;
+}
+
+.form-error--list li {
+  margin: 2px 0;
 }
 
 /* Trang quản trị (demo axios) */

@@ -1,16 +1,25 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const links = [
   { to: '/', label: 'Trang chủ', end: true },
   { to: '/hotels', label: 'Khách sạn' },
   { to: '/about-us', label: 'Giới thiệu' },
-  { to: '/admin/hotels', label: 'Quản trị' },
+  { to: '/admin/hotels', label: 'Quản trị', requiresAuth: true },
   { to: '/contact', label: 'Liên hệ' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+
+  function handleLogout() {
+    logout()
+    setOpen(false)
+    navigate('/')
+  }
 
   return (
     <header className="navbar">
@@ -24,20 +33,34 @@ export default function Navbar() {
         </Link>
 
         <nav className={`navbar__nav ${open ? 'is-open' : ''}`}>
-          {links.map((link) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              end={link.end}
-              onClick={() => setOpen(false)}
-              className={({ isActive }) => 'navbar__link' + (isActive ? ' is-active' : '')}
-            >
-              {link.label}
-            </NavLink>
-          ))}
-          <Link to="/login" className="btn btn--primary navbar__cta" onClick={() => setOpen(false)}>
-            Đăng nhập
-          </Link>
+          {links
+            .filter((link) => !link.requiresAuth || user)
+            .map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end={link.end}
+                onClick={() => setOpen(false)}
+                className={({ isActive }) => 'navbar__link' + (isActive ? ' is-active' : '')}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+
+          {user ? (
+            <span className="navbar__user">
+              <span className="navbar__email" title={user.email}>
+                {user.email}
+              </span>
+              <button type="button" className="btn btn--outline navbar__logout" onClick={handleLogout}>
+                Đăng xuất
+              </button>
+            </span>
+          ) : (
+            <Link to="/login" className="btn btn--primary navbar__cta" onClick={() => setOpen(false)}>
+              Đăng nhập
+            </Link>
+          )}
         </nav>
 
         <button

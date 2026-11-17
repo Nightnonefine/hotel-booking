@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Hotel> Hotels => Set<Hotel>();
     public DbSet<Booking> Bookings => Set<Booking>();
+    public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -22,6 +23,9 @@ public class AppDbContext : DbContext
 
         // SQL Server mặc định decimal(18,2); khai báo rõ để giá tiền không bị cắt.
         modelBuilder.Entity<Hotel>().Property(h => h.PricePerNight).HasPrecision(18, 2);
+
+        // Email là định danh đăng nhập -> phải duy nhất ở tầng DB, không chỉ ở code.
+        modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
 
         // Dữ liệu mẫu để GET /api/hotels có kết quả ngay sau migration.
         modelBuilder.Entity<Hotel>().HasData(
