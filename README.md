@@ -73,8 +73,42 @@ src/
 - `Layout.jsx` tự cuộn về đầu trang mỗi khi đổi route.
 - Thanh tìm kiếm ở trang chủ dùng `useNavigate()` để chuyển sang `/hotels?city=Đà Nẵng&guests=2`.
 
-## Việc còn lại (các buổi sau)
+## Backend API (bài tuần 2 — nhánh `week2-api`)
 
-- Backend NodeJS + ExpressJS + MySQL: khách sạn, loại phòng, đặt phòng, tài khoản
-- Form đặt phòng nối API, xác thực JWT cho admin/chủ khách sạn
+- **ASP.NET Core 8** (Controllers) + **EF Core 8** + **SQL Server Express**
+- Database `HotelBookingDb` trên instance `.\SQLEXPRESS`; connection string nằm trong `api/appsettings.json` → `ConnectionStrings:Default`
+- Bảng `Hotels`, `Bookings` (1-nhiều); xoá khách sạn còn đơn bị chặn và trả `409`; seed 4 khách sạn bằng `HasData`
+- Migration: `api/Migrations/*_InitialSqlServer.cs` (`dotnet ef database update` tự tạo database + bảng)
+
+### Endpoint
+
+| Method | Đường dẫn | Ghi chú |
+|---|---|---|
+| GET | `/api/hotels?city=&q=&page=&pageSize=` | danh sách + phân trang |
+| GET | `/api/hotels/{id}` | 200 / 404 |
+| POST | `/api/hotels` | 201 + `Location` |
+| PUT | `/api/hotels/{id}` | 204 / 404 |
+| DELETE | `/api/hotels/{id}` | 204 / 404 / 409 nếu còn đơn |
+| GET | `/api/bookings?status=&page=` | danh sách đơn |
+| GET | `/api/bookings/{id}` | 200 / 404 |
+| POST | `/api/bookings` | 201; 400 nếu ngày trả ≤ ngày nhận |
+| PUT | `/api/bookings/{id}` | đổi trạng thái đơn |
+| DELETE | `/api/bookings/{id}` | 204 / 404 |
+
+### Chạy backend
+
+```bash
+cd api
+dotnet tool restore
+dotnet ef database update
+dotnet run            # http://localhost:5080/swagger
+```
+
+Trang `/admin/hotels` gọi API qua axios (`src/services/api.js`), demo đủ GET/POST/PUT/DELETE.
+Test API: `python3 api/tests/smoke_test.py` (nếu có Python) hoặc thao tác trực tiếp trên Swagger.
+
+## Việc còn lại
+
+- Trang `/hotels` công khai vẫn dùng dữ liệu tĩnh, cần chuyển sang gọi API
+- Đăng nhập JWT cho admin / chủ khách sạn
 - Đóng gói Docker + deploy hosting
