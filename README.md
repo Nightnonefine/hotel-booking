@@ -107,8 +107,26 @@ dotnet run            # http://localhost:5080/swagger
 Trang `/admin/hotels` gọi API qua axios (`src/services/api.js`), demo đủ GET/POST/PUT/DELETE.
 Test API: `python3 api/tests/smoke_test.py` (nếu có Python) hoặc thao tác trực tiếp trên Swagger.
 
+## Đăng nhập / Đăng ký (bài tuần 3)
+
+Luồng hoàn chỉnh, kết hợp bài tuần 1 (giao diện React) với bài tuần 2 (API + SQL Server).
+
+| Method | Endpoint | Mô tả |
+|---|---|---|
+| POST | `/api/auth/register` | body `{ email, password }` → `201 { id, email }`; `400` nếu email sai/thiếu hoặc mật khẩu < 8 ký tự; `409` nếu email đã tồn tại |
+| POST | `/api/auth/login` | body `{ email, password }` → `200 { id, email }`; `401` nếu sai email hoặc mật khẩu |
+
+- Mật khẩu lưu dạng hash **PBKDF2-SHA256** (100.000 vòng, salt 16 byte) — `api/Security/PasswordHasher.cs`, không lưu plaintext
+- Email chuẩn hoá lowercase và có unique index ở DB (`IX_Users_Email`)
+- Validate 2 lớp: client (`src/pages/Register.jsx`) và server (`AuthController`), không tin dữ liệu từ client
+- Sau khi đăng nhập: React Context (`src/context/AuthContext.jsx`) giữ user và đồng bộ `localStorage` (key `azurestay_user`) → F5 vẫn còn đăng nhập, `logout()` xoá
+- `/admin/hotels` bọc trong `RequireAuth`: chưa đăng nhập thì redirect về `/login` (nhớ trang đang muốn vào)
+- Navbar hiện email + nút **Đăng xuất**; mục "Quản trị" chỉ hiện khi đã đăng nhập
+
+Tài khoản demo có sẵn trong DB: `demo@azurestay.vn` / `Demo@12345`
+
 ## Việc còn lại
 
 - Trang `/hotels` công khai vẫn dùng dữ liệu tĩnh, cần chuyển sang gọi API
-- Đăng nhập JWT cho admin / chủ khách sạn
+- JWT + phân quyền admin/chủ khách sạn (hiện mới chặn route ở phía client)
 - Đóng gói Docker + deploy hosting
