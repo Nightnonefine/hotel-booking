@@ -20,6 +20,9 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Hotel>().HasIndex(h => h.City);
 
+        // SQL Server mặc định decimal(18,2); khai báo rõ để giá tiền không bị cắt.
+        modelBuilder.Entity<Hotel>().Property(h => h.PricePerNight).HasPrecision(18, 2);
+
         // Dữ liệu mẫu để GET /api/hotels có kết quả ngay sau migration.
         modelBuilder.Entity<Hotel>().HasData(
             new Hotel { Id = 1, Name = "Azure Bay Resort", City = "Đà Nẵng", Address = "Võ Nguyên Giáp, Sơn Trà", PricePerNight = 1850000m, Rating = 4.8 },
